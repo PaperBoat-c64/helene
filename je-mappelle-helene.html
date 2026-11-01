@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Je m'appelle Hélène</title>
+<style>
+/* ===== Design tokens ===== */
+:root{
+  --bg:#f6f6f8;
+  --surface:#ffffff;
+  --surface-2:#efeff3;
+  --text:#1c1c21;
+  --text-2:#6b6b76;
+  --text-3:#9a9aa4;
+  --border:#e3e3e9;
+  --accent:#e0283c;
+  --accent-ink:#c2182f;
+  --accent-soft:rgba(224,40,60,.10);
+  --ok:#1f9d55;
+  --warn:#b7791f;
+  --bad:#d32f2f;
+  --shadow:0 1px 2px rgba(20,20,40,.06),0 8px 24px rgba(20,20,40,.08);
+  --shadow-sm:0 1px 2px rgba(20,20,40,.08);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e0e11;
+    --surface:#17171c;
+    --surface-2:#1f1f26;
+    --text:#f2f2f5;
+    --text-2:#a7a7b2;
+    --text-3:#6c6c77;
+    --border:#2a2a33;
+    --accent:#ff4d5e;
+    --accent-ink:#ff7a86;
+    --accent-soft:rgba(255,77,94,.14);
+    --ok:#4dd289;
+    --warn:#e3b341;
+    --bad:#ff6b6b;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.5);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e0e11;
+  --surface:#17171c;
+  --surface-2:#1f1f26;
+  --text:#f2f2f5;
+  --text-2:#a7a7b2;
+  --text-3:#6c6c77;
+  --border:#2a2a33;
+  --accent:#ff4d5e;
+  --accent-ink:#ff7a86;
+  --accent-soft:rgba(255,77,94,.14);
+  --ok:#4dd289;
+  --warn:#e3b341;
+  --bad:#ff6b6b;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.5);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+
+/* ===== Reset & base ===== */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.55; color:var(--text);
+  background:var(--bg);
+  padding:calc(env(safe-area-inset-top, 0px) + 0px) 0 calc(env(safe-area-inset-bottom, 0px) + 64px) 0;
+  min-height:100vh;
+}
+img{max-width:100%}
+[hidden]{display:none!important}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ===== Header ===== */
+.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 86%, transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.top-inner{max-width:1080px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.title-block{min-width:0}
+h1{margin:0;font-size:21px;font-weight:700;letter-spacing:-.02em;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta-line{margin-top:3px;font-size:12.5px;color:var(--text-2)}
+#theme-toggle{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;display:grid;place-items:center;box-shadow:var(--shadow-sm)}
+#theme-toggle:hover{border-color:var(--text-3)}
+
+/* ===== Tabs ===== */
+.tabs{position:sticky;top:69px;z-index:20;background:color-mix(in srgb,var(--bg) 88%, transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.tabs-inner{max-width:1080px;margin:0 auto;padding:0 12px;display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs-inner::-webkit-scrollbar{display:none}
+.tab{flex:none;padding:12px 16px;background:none;border:none;color:var(--text-2);font-size:14px;font-weight:600;position:relative;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--text)}
+.tab.active::after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:2.5px;border-radius:3px 3px 0 0;background:var(--accent)}
+
+/* ===== Layout ===== */
+main{max-width:1080px;margin:0 auto;padding:28px 20px 40px}
+.panel{display:none;animation:fade .18s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin:0 0 16px}
+.empty{padding:32px 16px;text-align:center;color:var(--text-2);font-size:14.5px;background:var(--surface);border:1px dashed var(--border);border-radius:16px}
+
+/* ===== Reading tab ===== */
+.para{margin-bottom:34px}
+.para-head{font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.sent-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:14px 0;border-bottom:1px solid var(--border)}
+.sent-row:last-child{border-bottom:none}
+.sent-orig{font-size:17.5px;font-weight:500;line-height:1.5}
+.sent-trans{font-size:15.5px;color:var(--text-2);line-height:1.55}
+.sent-literal{margin-top:6px;font-size:13px;color:var(--text-3);font-style:italic}
+.sent-id{font-size:11px;color:var(--text-3);font-weight:700;margin-right:6px;font-variant-numeric:tabular-nums}
+@media (max-width:640px){
+  .sent-row{grid-template-columns:1fr;gap:6px}
+  .sent-trans{padding-left:2px}
+}
+
+/* ===== Annotated tab ===== */
+.annot-block{margin-bottom:30px}
+.annot-sent{font-size:19px;line-height:1.75;font-weight:450}
+.token{color:var(--tok);background:var(--tok-bg);border-radius:4px;padding:0 3px;margin:0 1px;cursor:pointer;transition:background .12s}
+.token:hover{filter:brightness(.96)}
+.annot-trans{margin-top:10px;font-size:15px;color:var(--text-2);padding-left:4px;border-left:3px solid var(--border);padding-left:12px}
+.annot-literal{margin-top:4px;font-size:13px;color:var(--text-3);font-style:italic}
+
+/* ===== Tooltip ===== */
+.tooltip{position:fixed;z-index:60;width:min(340px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:14px 16px;font-size:14px}
+.tooltip .tt-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.tooltip .tt-surface{font-size:19px;font-weight:700}
+.tooltip .tt-lemma{font-size:13px;color:var(--text-2)}
+.tooltip .tt-pos{font-size:11px;font-weight:700;color:var(--accent-ink);text-transform:uppercase;letter-spacing:.04em;background:var(--accent-soft);padding:1px 7px;border-radius:99px}
+.tooltip .tt-ipa{font-size:13px;color:var(--text-3);font-style:italic}
+.tooltip .tt-meaning{margin:6px 0}
+.tooltip .tt-row{margin-top:7px}
+.tooltip .tt-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.tooltip .tt-tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:99px;background:var(--surface-2);color:var(--text-2);margin:1px 3px 1px 0}
+.tooltip .tt-verify{margin-top:8px;font-size:12px;color:var(--warn)}
+
+/* ===== Cards (vocab & expressions) ===== */
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.controls input[type=search]{flex:1;min-width:180px;padding:9px 13px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px}
+.controls select,.controls button.chip{padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.vcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .12s,box-shadow .12s}
+.vcard:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.vcard-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.vcard-surface{font-size:19px;font-weight:700}
+.vcard-lemma{font-size:13px;color:var(--text-2)}
+.vcard-ipa{font-size:12.5px;color:var(--text-3);font-style:italic}
+.vcard-pos{font-size:10.5px;font-weight:700;color:var(--accent-ink);text-transform:uppercase;letter-spacing:.04em;background:var(--accent-soft);padding:1px 7px;border-radius:99px}
+.vcard-meaning{font-size:14px;color:var(--text);margin-top:4px}
+.vcard-prio{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.prio-high{color:var(--accent-ink)}
+.prio-medium{color:var(--warn)}
+.prio-low{color:var(--text-3)}
+.vcard-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:13.5px;display:none}
+.vcard.open .vcard-detail{display:block}
+.detail-row{margin-bottom:9px}
+.detail-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.detail-row ul{margin:0;padding-left:18px}
+.detail-row li{margin-bottom:3px}
+.ex-src{font-style:italic}
+.ex-tr{color:var(--text-2)}
+
+/* ===== Expressions ===== */
+.excard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.excard-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.excard-text{font-size:18px;font-weight:700}
+.badge{font-size:11px;font-weight:700;padding:1px 8px;border-radius:99px;background:var(--surface-2);color:var(--text-2)}
+.badge-type{background:var(--accent-soft);color:var(--accent-ink)}
+.badge-reg{background:var(--surface-2);color:var(--text-2)}
+.badge-sens-warn{background:rgba(179,119,31,.15);color:var(--warn)}
+
+/* ===== Grammar ===== */
+.gcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px}
+.gcard-title{font-size:17px;font-weight:700;margin-bottom:8px}
+.gcard-title .gid{font-size:12px;color:var(--text-3);font-weight:700;margin-right:6px}
+.gcard-explain{font-size:14.5px;line-height:1.6}
+.gcard-pattern{margin:10px 0;padding:8px 12px;background:var(--surface-2);border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;overflow-x:auto}
+.gcard-ex{margin-top:8px;padding:8px 12px;border-left:3px solid var(--border);font-size:13.5px}
+.gcard-refs{margin-top:10px;font-size:12.5px;color:var(--text-2)}
+.gcard-refs a{color:var(--accent-ink);text-decoration:none;cursor:pointer}
+
+/* ===== Exercises ===== */
+.exercise{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px}
+.exercise-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.exercise-prompt{font-size:15.5px;margin-bottom:10px}
+.exercise-prompt .blank{display:inline-block;min-width:70px;border-bottom:2px solid var(--text-3);margin:0 2px}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14.5px;transition:border-color .12s,background .12s}
+.opt:hover{border-color:var(--text-3)}
+.opt.correct{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 10%, transparent)}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%, transparent)}
+.opt.reveal{border-color:var(--ok)}
+.reveal-btn{margin-top:10px;padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:13.5px;font-weight:600}
+.reveal-btn:hover{border-color:var(--text-3)}
+.answer-box{display:none;margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--surface-2);font-size:14px}
+.answer-box.show{display:block}
+.answer-box .lbl{font-weight:700;color:var(--accent-ink)}
+.rubric{margin:6px 0 0;padding-left:18px}
+.rubric li{margin-bottom:3px}
+
+/* ===== Flashcards ===== */
+.flash-wrap{max-width:520px;margin:0 auto}
+.flash-stage{perspective:1200px;margin:0 auto}
+.flash{position:relative;width:100%;min-height:260px;transform-style:preserve-3d;transition:transform .5s;cursor:pointer}
+.flash.flipped{transform:rotateY(180deg)}
+.flash-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:32px 24px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);text-align:center}
+.flash-back{transform:rotateY(180deg)}
+.flash-front-word{font-size:30px;font-weight:700}
+.flash-front-ipa{font-size:14px;color:var(--text-3);font-style:italic}
+.flash-hint{font-size:12px;color:var(--text-3);position:absolute;bottom:14px}
+.flash-back-lemma{font-size:18px;font-weight:700}
+.flash-back-meaning{font-size:16px}
+.flash-back-meta{font-size:13px;color:var(--text-2)}
+.flash-nav{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:18px}
+.flash-nav button{padding:10px 18px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;font-weight:600}
+.flash-nav button:hover{border-color:var(--text-3)}
+.flash-count{font-size:13px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.flash-export{margin-top:22px;text-align:center}
+.flash-export button{padding:9px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px}
+.flash-export textarea{width:100%;height:130px;margin-top:10px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text);font-family:ui-monospace,Menlo,monospace;font-size:12px;padding:10px}
+
+/* ===== QA footer ===== */
+.qa{margin-top:8px;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:13px}
+.qa summary{cursor:pointer;font-weight:600;color:var(--text-2)}
+.qa table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px}
+.qa th,.qa td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--border)}
+.qa th{color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;font-size:11px}
+.st-pass{color:var(--ok);font-weight:700}
+.st-fail{color:var(--bad);font-weight:700}
+.st-unverified{color:var(--warn);font-weight:700}
+.st-na{color:var(--text-3)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="title-block">
+      <h1 id="title">Study packet</h1>
+      <div class="meta-line" id="meta-line"></div>
+    </div>
+    <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+  </div>
+</header>
+
+<nav class="tabs"><div class="tabs-inner" id="tabs">
+  <button class="tab active" data-tab="reading">Reading</button>
+  <button class="tab" data-tab="annotated">Annotated</button>
+  <button class="tab" data-tab="vocabulary">Vocabulary</button>
+  <button class="tab" data-tab="expressions">Expressions</button>
+  <button class="tab" data-tab="grammar">Grammar</button>
+  <button class="tab" data-tab="exercises">Exercises</button>
+  <button class="tab" data-tab="cards">Cards</button>
+</div></nav>
+
+<main>
+  <section class="panel active" id="panel-reading"></section>
+  <section class="panel" id="panel-annotated"></section>
+  <section class="panel" id="panel-vocabulary"></section>
+  <section class="panel" id="panel-expressions"></section>
+  <section class="panel" id="panel-grammar"></section>
+  <section class="panel" id="panel-exercises"></section>
+  <section class="panel" id="panel-cards"></section>
+</main>
+
+<div id="tooltip" class="tooltip" hidden></div>
+
+<script id="packet-data" type="application/json">{"schemaVersion": "2.0", "meta": {"title": "Je m'appelle Hélène", "textLanguage": "fr", "explanationLanguage": "zh-CN", "genre": "other", "register": "chanson（流行歌曲歌词）— 第一人称、口语化、亲切而略带忧伤", "mode": "study", "createdAt": "2026-11-01T00:45:00Z", "level": {"strategy": "default-adaptive"}, "notes": ["来源：法语流行歌曲《Je m'appelle Hélène》（Hélène Rollès，1993）。", "歌词原文无句末标点（分行书写）；逐行作为一个『句子』切分。"]}, "source": {"text": "Hélène\nJe m'appelle Hélène\nJe suis une fille\nComme les autres\nHélène\nJ'ai mes joies, mes peines\nElles font ma vie\nComme la vôtre\nJe voudrais trouver l'amour\nSimplement trouver l'amour\nHélène\nJe m'appelle Hélène\nJe suis une fille\nComme les autres\nHélène\nSi mes nuits sont pleines\nDe rêves, de poèmes\nJe n'ai rien d'autre\nJe voudrais trouver l'amour\nSimplement trouver l'amour\nEt même\nSi j'ai ma photo\nDans tous les journaux\nChaque semaine\nPersonne\nNe m'attend le soir\nQuand je rentre tard\nPersonne ne fait battre mon cœur\nLorsque s'éteignent les projecteurs\nHélène\nJe m'appelle Hélène\nJe suis une fille comme les autres\nJe voudrais trouver l'amour\nSimplement trouver l'amour\nEt même\nQuand à la télé\nVous me regardez\nSourire et chanter\nPersonne\nNe m'attend le soir\nQuand je rentre tard\nPersonne ne fait battre mon cœur\nLorsque s'éteignent les projecteurs\nHélène\nJe m'appelle Hélène\nJe suis une fille\nComme les autres\nHélène\nEt toutes mes peines\nTrouveront l'oubli\nUn jour ou l'autre\nQuand je trouverai l'amour\nQuand je trouverai l'amour\nQuand je trouverai l'amour\nQuand je trouverai l'amour\nJe m'appelle Hélène", "characterCount": 1108, "sentenceCount": 56, "integrity": "modified-flag", "normalizationNotes": ["原始数据中法语单词之间的空格被分词器丢失（如『Jem'appelleHélène』），已按原歌词恢复空格。", "原歌词本身无句末标点；已按通行写法恢复少量内部逗号（如『J'ai mes joies, mes peines』、『De rêves, de poèmes』）。", "第 36 行（『Quand à la télé』）按演唱语义采用连词 Quand（当……时），而非旧标注文件中的『Quant à』；辨析见语法点 g008。", "结尾『Quand je trouverai l'amour』在源数据中重复 4 次，予以保留。"], "copyrightNote": "歌词来源：Hélène Rollès《Je m'appelle Hélène》(1993)。按用户提供的文本用于个人语言学习，全文引用仅限学习目的。"}, "sentences": [{"id": "s01-01", "paragraph": 1, "text": "Hélène", "translation": "伊莲（人名，女性）。"}, {"id": "s01-02", "paragraph": 1, "text": "Je m'appelle Hélène", "translation": "我叫伊莲。", "literal": "字面：我把我自己叫作伊莲。", "vocabularyRefs": ["v001"], "grammarRefs": ["g001"]}, {"id": "s01-03", "paragraph": 1, "text": "Je suis une fille", "translation": "我是一个女孩。", "vocabularyRefs": ["v002"]}, {"id": "s01-04", "paragraph": 1, "text": "Comme les autres", "translation": "和其他女孩一样。", "vocabularyRefs": ["v003"], "expressionRefs": ["e001"]}, {"id": "s02-01", "paragraph": 2, "text": "Hélène", "translation": "伊莲。"}, {"id": "s02-02", "paragraph": 2, "text": "J'ai mes joies, mes peines", "translation": "我有我的快乐，也有我的忧伤。", "literal": "字面：我有我的快乐，我的忧伤。", "vocabularyRefs": ["v005", "v004"], "expressionRefs": ["e002"]}, {"id": "s02-03", "paragraph": 2, "text": "Elles font ma vie", "translation": "它们构成了我的生活。"}, {"id": "s02-04", "paragraph": 2, "text": "Comme la vôtre", "translation": "就像你们的生活一样。", "literal": "字面：像你们的那一个（指 la vie，生活）。", "vocabularyRefs": ["v010"], "grammarRefs": ["g007"]}, {"id": "s03-01", "paragraph": 3, "text": "Je voudrais trouver l'amour", "translation": "我想要找到爱情。", "vocabularyRefs": ["v006", "v007", "v008"], "expressionRefs": ["e003"], "grammarRefs": ["g002"]}, {"id": "s03-02", "paragraph": 3, "text": "Simplement trouver l'amour", "translation": "只是简简单单地找到爱情。", "vocabularyRefs": ["v009", "v007", "v008"], "expressionRefs": ["e003"]}, {"id": "s04-01", "paragraph": 4, "text": "Hélène", "translation": "伊莲。"}, {"id": "s04-02", "paragraph": 4, "text": "Je m'appelle Hélène", "translation": "我叫伊莲。", "vocabularyRefs": ["v001"], "grammarRefs": ["g001"]}, {"id": "s04-03", "paragraph": 4, "text": "Je suis une fille", "translation": "我是一个女孩。", "vocabularyRefs": ["v002"]}, {"id": "s04-04", "paragraph": 4, "text": "Comme les autres", "translation": "和其他女孩一样。", "vocabularyRefs": ["v003"], "expressionRefs": ["e001"]}, {"id": "s05-01", "paragraph": 5, "text": "Hélène", "translation": "伊莲。"}, {"id": "s05-02", "paragraph": 5, "text": "Si mes nuits sont pleines", "translation": "如果我的夜晚满满当当，", "vocabularyRefs": ["v012"]}, {"id": "s05-03", "paragraph": 5, "text": "De rêves, de poèmes", "translation": "满是梦想与诗歌，", "vocabularyRefs": ["v011"]}, {"id": "s05-04", "paragraph": 5, "text": "Je n'ai rien d'autre", "translation": "那我便别无所有了。", "literal": "字面：我什么都没有别的。", "expressionRefs": ["e004"]}, {"id": "s06-01", "paragraph": 6, "text": "Je voudrais trouver l'amour", "translation": "我想要找到爱情。", "vocabularyRefs": ["v006", "v007", "v008"], "expressionRefs": ["e003"], "grammarRefs": ["g002"]}, {"id": "s06-02", "paragraph": 6, "text": "Simplement trouver l'amour", "translation": "只是简简单单地找到爱情。", "vocabularyRefs": ["v009", "v007", "v008"], "expressionRefs": ["e003"]}, {"id": "s07-01", "paragraph": 7, "text": "Et même", "translation": "甚至，"}, {"id": "s07-02", "paragraph": 7, "text": "Si j'ai ma photo", "translation": "即使我的照片"}, {"id": "s07-03", "paragraph": 7, "text": "Dans tous les journaux", "translation": "刊登在所有的报纸上，", "vocabularyRefs": ["v013"]}, {"id": "s07-04", "paragraph": 7, "text": "Chaque semaine", "translation": "每个星期都是如此。"}, {"id": "s08-01", "paragraph": 8, "text": "Personne", "translation": "没有一个人", "grammarRefs": ["g004"]}, {"id": "s08-02", "paragraph": 8, "text": "Ne m'attend le soir", "translation": "在夜晚等我，", "vocabularyRefs": ["v014"], "grammarRefs": ["g004"]}, {"id": "s08-03", "paragraph": 8, "text": "Quand je rentre tard", "translation": "当我深夜回家的时候。"}, {"id": "s08-04", "paragraph": 8, "text": "Personne ne fait battre mon cœur", "translation": "没有一个人让我的心怦然跳动，", "literal": "字面：没有人使我的心跳动。", "vocabularyRefs": ["v015"], "grammarRefs": ["g004", "g005"]}, {"id": "s08-05", "paragraph": 8, "text": "Lorsque s'éteignent les projecteurs", "translation": "当聚光灯熄灭的时候。", "vocabularyRefs": ["v016"], "grammarRefs": ["g006"]}, {"id": "s09-01", "paragraph": 9, "text": "Hélène", "translation": "伊莲。"}, {"id": "s09-02", "paragraph": 9, "text": "Je m'appelle Hélène", "translation": "我叫伊莲。", "vocabularyRefs": ["v001"], "grammarRefs": ["g001"]}, {"id": "s09-03", "paragraph": 9, "text": "Je suis une fille comme les autres", "translation": "我是一个和别人一样的女孩。", "vocabularyRefs": ["v002", "v003"]}, {"id": "s09-04", "paragraph": 9, "text": "Je voudrais trouver l'amour", "translation": "我想要找到爱情。", "vocabularyRefs": ["v006", "v007", "v008"], "expressionRefs": ["e003"], "grammarRefs": ["g002"]}, {"id": "s09-05", "paragraph": 9, "text": "Simplement trouver l'amour", "translation": "只是简简单单地找到爱情。", "vocabularyRefs": ["v009", "v007", "v008"], "expressionRefs": ["e003"]}, {"id": "s10-01", "paragraph": 10, "text": "Et même", "translation": "甚至，"}, {"id": "s10-02", "paragraph": 10, "text": "Quand à la télé", "translation": "当在电视上，", "grammarRefs": ["g008"], "notes": ["此处为连词 Quand（当……时），并非 quant à（至于）；辨析见语法点 g008。"]}, {"id": "s10-03", "paragraph": 10, "text": "Vous me regardez", "translation": "你们注视着我，"}, {"id": "s10-04", "paragraph": 10, "text": "Sourire et chanter", "translation": "微笑着、唱着歌。"}, {"id": "s11-01", "paragraph": 11, "text": "Personne", "translation": "没有一个人", "grammarRefs": ["g004"]}, {"id": "s11-02", "paragraph": 11, "text": "Ne m'attend le soir", "translation": "在夜晚等我，", "vocabularyRefs": ["v014"], "grammarRefs": ["g004"]}, {"id": "s11-03", "paragraph": 11, "text": "Quand je rentre tard", "translation": "当我深夜回家的时候。"}, {"id": "s11-04", "paragraph": 11, "text": "Personne ne fait battre mon cœur", "translation": "没有一个人让我的心怦然跳动，", "vocabularyRefs": ["v015"], "grammarRefs": ["g004", "g005"]}, {"id": "s11-05", "paragraph": 11, "text": "Lorsque s'éteignent les projecteurs", "translation": "当聚光灯熄灭的时候。", "vocabularyRefs": ["v016"], "grammarRefs": ["g006"]}, {"id": "s12-01", "paragraph": 12, "text": "Hélène", "translation": "伊莲。"}, {"id": "s12-02", "paragraph": 12, "text": "Je m'appelle Hélène", "translation": "我叫伊莲。", "vocabularyRefs": ["v001"], "grammarRefs": ["g001"]}, {"id": "s12-03", "paragraph": 12, "text": "Je suis une fille", "translation": "我是一个女孩。", "vocabularyRefs": ["v002"]}, {"id": "s12-04", "paragraph": 12, "text": "Comme les autres", "translation": "和其他女孩一样。", "vocabularyRefs": ["v003"], "expressionRefs": ["e001"]}, {"id": "s13-01", "paragraph": 13, "text": "Hélène", "translation": "伊莲。"}, {"id": "s13-02", "paragraph": 13, "text": "Et toutes mes peines", "translation": "而我所有的忧伤，", "vocabularyRefs": ["v004"]}, {"id": "s13-03", "paragraph": 13, "text": "Trouveront l'oubli", "translation": "终将被遗忘。", "vocabularyRefs": ["v017"], "grammarRefs": ["g003"]}, {"id": "s13-04", "paragraph": 13, "text": "Un jour ou l'autre", "translation": "总有一天。", "expressionRefs": ["e005"]}, {"id": "s14-01", "paragraph": 14, "text": "Quand je trouverai l'amour", "translation": "当我找到爱情的时候，", "vocabularyRefs": ["v008"], "grammarRefs": ["g003"]}, {"id": "s14-02", "paragraph": 14, "text": "Quand je trouverai l'amour", "translation": "当我找到爱情的时候，", "vocabularyRefs": ["v008"], "grammarRefs": ["g003"]}, {"id": "s14-03", "paragraph": 14, "text": "Quand je trouverai l'amour", "translation": "当我找到爱情的时候，", "vocabularyRefs": ["v008"], "grammarRefs": ["g003"]}, {"id": "s14-04", "paragraph": 14, "text": "Quand je trouverai l'amour", "translation": "当我找到爱情的时候，", "vocabularyRefs": ["v008"], "grammarRefs": ["g003"]}, {"id": "s14-05", "paragraph": 14, "text": "Je m'appelle Hélène", "translation": "我叫伊莲。", "vocabularyRefs": ["v001"], "grammarRefs": ["g001"]}], "vocabulary": [{"id": "v001", "surface": "m'appelle", "lemma": "s'appeler", "pos": "verb", "meaningInContext": "叫……名字；『je m'appelle』字面是『我把自己叫作……』，实际等于『我叫……』（介绍名字的标准说法）。", "morphology": {"description": "代词式动词 s'appeler 的第一人称单数现在时；反身代词 me 因元音开头省略为 m'，动词变位 appeler 双写 l（appelle）。", "features": ["pronominal", "présent", "1sg", "élision"]}, "pronunciation": {"ipa": "/ʒə ma.pɛl/", "note": "末尾 -e 不发音。"}, "collocations": ["s'appeler + 人名", "Comment tu t'appelles ?（你叫什么名字？）"], "examples": [{"text": "Comment t'appelles-tu ?", "translation": "你叫什么名字？"}, {"text": "Elle s'appelle Marie.", "translation": "她叫玛丽。"}], "commonErrors": ["误写作 *je m'appel（应为双 l 的 appelle）", "把 s'appeler 按字面理解成『叫喊』（单独 appeler 才是『呼叫/打电话』）"], "confusions": [{"term": "appeler", "distinction": "单独 appeler = 打电话/叫喊；s'appeler = 名叫……"}], "sentenceRefs": ["s01-02", "s04-02", "s09-02", "s12-02", "s14-05"], "priority": "high", "confidence": "high", "needsVerification": false, "tags": ["reflexive", "self-introduction"]}, {"id": "v002", "surface": "fille", "lemma": "fille", "pos": "noun", "gender": "feminine", "meaningInContext": "女孩；『Je suis une fille』= 我是一个女孩。", "morphology": {"description": "阴性名词，单数；复数 filles。", "features": ["feminine", "singular"]}, "pronunciation": {"ipa": "/fij/"}, "collocations": ["une petite fille（小女孩）", "un garçon et une fille（一个男孩和一个女孩）"], "commonErrors": ["混淆 fille（女孩/女儿）与 fils（儿子）——两者发音相近"], "confusions": [{"term": "fils", "distinction": "fils = 儿子；fille = 女孩/女儿"}], "sentenceRefs": ["s01-03", "s04-03", "s09-03", "s12-03"], "priority": "medium", "confidence": "high", "needsVerification": false, "tags": ["false-friend"]}, {"id": "v003", "surface": "autres", "lemma": "autre", "pos": "adjective", "meaningInContext": "『les autres』= 其他人（其他女孩）；名词化用法，指『别人』。", "morphology": {"description": "不定形容词 autre 的复数形式（+ -s）。", "features": ["plural"]}, "pronunciation": {"ipa": "/otʁ/"}, "collocations": ["les autres（别人）", "autre chose（别的东西）", "l'un l'autre（互相）"], "examples": [{"text": "Les autres sont déjà partis.", "translation": "其他人已经走了。"}], "commonErrors": ["『les autres』漏掉定冠词 les"], "sentenceRefs": ["s01-04", "s04-04", "s09-03", "s12-04"], "priority": "medium", "confidence": "high", "needsVerification": false, "tags": ["indefinite"]}, {"id": "v004", "surface": "peines", "lemma": "peine", "pos": "noun", "gender": "feminine", "meaningInContext": "忧伤、痛苦（与 joies 相对：快乐与忧伤）。", "morphology": {"description": "阴性名词，复数形式 peines。", "features": ["feminine", "plural"]}, "pronunciation": {"ipa": "/pɛn/"}, "collocations": ["avoir de la peine（难过）", "faire de la peine à quelqu'un（让某人难过）"], "commonErrors": ["混淆 peine 的多种义项：『忧伤/痛苦』、『困难』（avoir de la peine à faire）、『刑罚』（peine de mort = 死刑）"], "examples": [{"text": "Ça me fait de la peine.", "translation": "这让我很难过。"}], "sentenceRefs": ["s02-02", "s13-02"], "priority": "high", "confidence": "high", "needsVerification": false, "tags": ["polysemous"]}, {"id": "v005", "surface": "joies", "lemma": "joie", "pos": "noun", "gender": "feminine", "meaningInContext": "快乐、欢乐（『mes joies, mes peines』= 我的快乐与忧伤）。", "morphology": {"description": "阴性名词，复数 joies。", "features": ["feminine", "plural"]}, "pronunciation": {"ipa": "/ʒwa/"}, "collocations": ["la joie de vivre（生活的乐趣）", "plein de joie（充满喜悦）"], "sentenceRefs": ["s02-02"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "v006", "surface": "voudrais", "lemma": "vouloir", "pos": "verb", "meaningInContext": "想要（条件式现在时，表礼貌、委婉的愿望）；『Je voudrais』= 我想要、我希望。", "morphology": {"description": "vouloir 的条件式现在时第一人称单数（vouloir 为不规则动词）；条件式在此表委婉愿望，而非『过去将来』。", "features": ["conditionnel présent", "1sg", "irregular", "politeness"]}, "pronunciation": {"ipa": "/vu.dʁɛ/"}, "collocations": ["je voudrais + 动词不定式（我想要做……）", "je voudrais + 名词（我想要……）"], "examples": [{"text": "Je voudrais un café, s'il vous plaît.", "translation": "我想要一杯咖啡，谢谢。"}], "commonErrors": ["在礼貌请求中误用 je veux（较生硬、直接）"], "confusions": [{"term": "je veux", "distinction": "je veux = 我要（直接、命令感）；je voudrais = 我想要（委婉、礼貌）"}], "sentenceRefs": ["s03-01", "s06-01", "s09-04"], "priority": "high", "confidence": "high", "needsVerification": false, "tags": ["conditional", "politeness"]}, {"id": "v007", "surface": "trouver", "lemma": "trouver", "pos": "verb", "meaningInContext": "找到（『trouver l'amour』= 找到爱情）。", "morphology": {"description": "第一组动词 trouver 的不定式；歌中另出现将来式 trouveront（s13-03）与 trouverai（s14），见语法点 g003。", "features": ["infinitive", "-er verb"]}, "pronunciation": {"ipa": "/tʁu.ve/"}, "collocations": ["trouver l'amour（找到爱情）", "trouver une solution（找到解决办法）"], "examples": [{"text": "J'ai trouvé mes clés.", "translation": "我找到了我的钥匙。"}], "commonErrors": ["混淆 trouver（找到）与 chercher（寻找，尚未找到）"], "confusions": [{"term": "chercher", "distinction": "chercher = 寻找（过程）；trouver = 找到（结果）"}], "sentenceRefs": ["s03-01", "s03-02", "s06-01", "s06-02", "s09-04", "s09-05"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "v008", "surface": "amour", "lemma": "amour", "pos": "noun", "gender": "masculine", "meaningInContext": "爱情（『trouver l'amour』= 找到爱情）。", "morphology": {"description": "单数为阳性（l'amour）；复数 amours 在书面语中常转阴性，属特殊现象，此处仅单数。", "features": ["masculine", "singular"]}, "pronunciation": {"ipa": "/a.muʁ/"}, "collocations": ["trouver l'amour（找到爱情）", "l'amour de ma vie（我的一生挚爱）"], "commonErrors": ["把单数 amour 误判为阴性（单数 l'amour 是阳性）"], "sentenceRefs": ["s03-01", "s03-02", "s06-01", "s06-02", "s09-04", "s09-05", "s14-01", "s14-02", "s14-03", "s14-04"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "v009", "surface": "Simplement", "lemma": "simplement", "pos": "adverb", "meaningInContext": "仅仅、只是（『Simplement trouver l'amour』= 只是想要找到爱情）。", "morphology": {"description": "形容词 simple + 副词后缀 -ment。", "features": ["adverb of manner"]}, "pronunciation": {"ipa": "/sɛ̃.plə.mɑ̃/"}, "collocations": ["tout simplement（简简单单地）"], "examples": [{"text": "C'est simplement une question de temps.", "translation": "这只是一个时间问题。"}], "sentenceRefs": ["s03-02", "s06-02", "s09-05"], "priority": "low", "confidence": "high", "needsVerification": false}, {"id": "v010", "surface": "la vôtre", "lemma": "le vôtre", "pos": "pronoun", "meaningInContext": "你们/您的（那个东西）；此处 la vôtre 指代前面的 la vie（生活），即『你们的生活』。", "morphology": {"description": "主有代词（possessive pronoun）阴性单数，阳性为 le vôtre；独立使用，代替『votre + 名词』。", "features": ["possessive pronoun", "feminine", "singular", "2pl"]}, "pronunciation": {"ipa": "/la votʁ/"}, "collocations": ["le mien / le tien / le sien / le nôtre / le vôtre / le leur（我的/你的/他的/我们的/你们的/他们的）"], "examples": [{"text": "Ma vie est comme la vôtre.", "translation": "我的生活和你们的一样。"}], "commonErrors": ["把主有代词 la vôtre 与主有形容词 votre（后必须跟名词）混用"], "confusions": [{"term": "votre", "distinction": "votre = 你的/你们的（后接名词：votre vie）；le vôtre / la vôtre = 你的/你们的（那个）（独立使用）"}], "sentenceRefs": ["s02-04"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "v011", "surface": "rêves", "lemma": "rêve", "pos": "noun", "gender": "masculine", "meaningInContext": "梦想、梦（『De rêves, de poèmes』= 充满梦想与诗歌）。", "morphology": {"description": "阳性名词，复数 rêves。", "features": ["masculine", "plural"]}, "pronunciation": {"ipa": "/ʁɛv/"}, "collocations": ["faire un rêve（做梦）", "rêve d'enfant（儿时的梦想）"], "sentenceRefs": ["s05-03"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "v012", "surface": "nuits", "lemma": "nuit", "pos": "noun", "gender": "feminine", "meaningInContext": "夜晚（『Si mes nuits sont pleines』= 如果我的夜晚满满当当）。", "morphology": {"description": "阴性名词，复数 nuits。", "features": ["feminine", "plural"]}, "pronunciation": {"ipa": "/nɥi/"}, "collocations": ["bonne nuit（晚安）", "la nuit（夜里）"], "examples": [{"text": "Bonne nuit !", "translation": "晚安！"}], "sentenceRefs": ["s05-02"], "priority": "low", "confidence": "high", "needsVerification": false}, {"id": "v013", "surface": "journaux", "lemma": "journal", "pos": "noun", "gender": "masculine", "meaningInContext": "报纸（『Dans tous les journaux』= 在所有报纸上）。", "morphology": {"description": "阳性名词 journal 的不规则复数：以 -al 结尾的名词复数变 -aux（journal → journaux）。", "features": ["masculine", "plural", "-al → -aux"]}, "pronunciation": {"ipa": "/ʒuʁ.no/"}, "collocations": ["lire le journal（读报）", "un journal intime（私人日记）"], "commonErrors": ["复数误写成 *journals（应为 journaux）"], "sentenceRefs": ["s07-03"], "priority": "high", "confidence": "high", "needsVerification": false, "tags": ["irregular-plural"]}, {"id": "v014", "surface": "m'attend", "lemma": "attendre", "pos": "verb", "meaningInContext": "等我（『Ne m'attend le soir』= 夜里不等我）；attendre qqn = 等待某人，直接宾语代词前置于动词。", "morphology": {"description": "attendre 第三人称单数现在时；直接宾语代词 me 因元音开头省略为 m'，置于动词前。", "features": ["présent", "3sg", "clitic me → m'"]}, "pronunciation": {"ipa": "/ma.tɑ̃/"}, "collocations": ["attendre quelqu'un（等某人）", "attendre que + subjonctif（等待……）"], "examples": [{"text": "Elle m'attend à la gare.", "translation": "她在车站等我。"}], "commonErrors": ["在 attendre 后误加介词（attendre qqn 是直接及物，不需要 à）"], "confusions": [{"term": "s'attendre à", "distinction": "attendre = 等待；s'attendre à = 预料到、预期"}], "sentenceRefs": ["s08-02", "s11-02"], "priority": "medium", "confidence": "high", "needsVerification": false, "tags": ["valency"]}, {"id": "v015", "surface": "cœur", "lemma": "cœur", "pos": "noun", "gender": "masculine", "meaningInContext": "心、心脏（『fait battre mon cœur』= 让我的心跳动）。", "morphology": {"description": "阳性名词，含 œ 连字，注意拼写。", "features": ["masculine", "singular", "œ ligature"]}, "pronunciation": {"ipa": "/kœʁ/"}, "collocations": ["battre（le cœur bat = 心跳动）", "de tout mon cœur（全心全意）", "avoir le cœur brisé（心碎）"], "examples": [{"text": "Mon cœur bat très vite.", "translation": "我的心跳得很快。"}], "commonErrors": ["把 œ 写成 oe（cœur 常被误拼为 *coeur）"], "sentenceRefs": ["s08-04", "s11-04"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "v016", "surface": "s'éteignent", "lemma": "s'éteindre", "pos": "verb", "meaningInContext": "熄灭（『Lorsque s'éteignent les projecteurs』= 当聚光灯熄灭时）。", "morphology": {"description": "代词式动词 s'éteindre 第三人称复数现在时；反身代词 se 因元音省略为 s'；主语 projecteurs 位于动词之后（倒装）。", "features": ["pronominal", "présent", "3pl", "élision", "inversion"]}, "pronunciation": {"ipa": "/se.tɛɲ/"}, "collocations": ["la lumière s'éteint（灯熄灭）", "éteindre la lumière（关灯）"], "examples": [{"text": "La lumière s'éteint à minuit.", "translation": "午夜时分灯熄灭。"}], "commonErrors": ["混淆 éteindre（关灯/熄灭）与 allumer（点亮/打开）"], "confusions": [{"term": "allumer", "distinction": "allumer = 点亮、打开；éteindre = 熄灭、关闭"}], "sentenceRefs": ["s08-05", "s11-05"], "priority": "high", "confidence": "high", "needsVerification": false, "tags": ["pronominal"]}, {"id": "v017", "surface": "oubli", "lemma": "oubli", "pos": "noun", "gender": "masculine", "meaningInContext": "遗忘、忘却（『Trouveront l'oubli』= 终将被遗忘/得到遗忘）。", "morphology": {"description": "阳性名词；相关动词为 oublier（忘记）。", "features": ["masculine", "singular"]}, "pronunciation": {"ipa": "/u.bli/"}, "collocations": ["trouver l'oubli（得到遗忘/被遗忘）", "tomber dans l'oubli（被遗忘、湮没无闻）"], "examples": [{"text": "Ce souvenir est tombé dans l'oubli.", "translation": "那段记忆已被遗忘。"}], "sentenceRefs": ["s13-03"], "priority": "medium", "confidence": "high", "needsVerification": false, "tags": ["literary"]}], "expressions": [{"id": "e001", "text": "Comme les autres", "type": "collocation", "literalMeaning": "像其他人一样", "meaningInContext": "和别人一样；强调自己只是个普通人。", "register": "neutral", "region": [], "usageNotes": ["常与 être 连用：être comme les autres = 和别人一样。", "第 32 行（s09-03）插入句中写作小写『comme les autres』。"], "examples": [{"text": "Je veux être comme les autres.", "translation": "我想和别人一样。"}], "sentenceRefs": ["s01-04", "s04-04", "s12-04"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "e002", "text": "mes joies, mes peines", "type": "collocation", "literalMeaning": "我的快乐，我的忧伤", "meaningInContext": "我的喜怒哀乐、我的快乐与忧伤。", "register": "neutral", "region": [], "usageNotes": ["通常说『les joies et les peines』（快乐与忧伤），歌词省略连词 et、用逗号并列，更富诗意。"], "examples": [{"text": "La vie a ses joies et ses peines.", "translation": "生活有喜也有悲。"}], "sentenceRefs": ["s02-02"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "e003", "text": "trouver l'amour", "type": "collocation", "literalMeaning": "找到爱情", "meaningInContext": "找到爱情、寻得真爱（全歌的主题）。", "register": "neutral", "region": [], "examples": [{"text": "Elle a trouvé l'amour de sa vie.", "translation": "她找到了她一生的挚爱。"}], "sentenceRefs": ["s03-01", "s03-02", "s06-01", "s06-02", "s09-04", "s09-05"], "priority": "high", "confidence": "high", "needsVerification": false}, {"id": "e004", "text": "rien d'autre", "type": "grammatical-expression", "literalMeaning": "没有别的东西", "meaningInContext": "别的什么都没有；『Je n'ai rien d'autre』= 我再没有别的了（除了这些梦想与诗歌）。", "register": "neutral", "region": [], "usageNotes": ["rien 与 d'autre 搭配，动词前需加 ne 构成否定（je n'ai rien d'autre）。"], "examples": [{"text": "Il ne pense à rien d'autre.", "translation": "他别的什么都不想。"}], "sentenceRefs": ["s05-04"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "e005", "text": "Un jour ou l'autre", "type": "idiom", "literalMeaning": "这一天或那一天", "meaningInContext": "总有一天、迟早（不确定但终会到来的某一天）。", "register": "neutral", "region": [], "usageNotes": ["惯用语，字面『这一天或另一天』，实际意为『迟早』。"], "alternatives": ["tôt ou tard（迟早）"], "examples": [{"text": "Un jour ou l'autre, tu comprendras.", "translation": "总有一天你会明白的。"}], "sentenceRefs": ["s13-04"], "priority": "high", "confidence": "high", "needsVerification": false}], "grammar": [{"id": "g001", "title": "s'appeler — 代词式动词：『我叫……』", "explanation": "『Je m'appelle Hélène』意为『我叫伊莲』。s'appeler 是代词式动词，由 appeler（叫）+ 反身代词 se 构成，字面是『把自己叫做……』。主语是 je 时，反身代词变成 me，并在元音前省略为 m'：je m'appelle。这是介绍自己名字的标准说法，比『Mon nom est…』更自然。", "pattern": "je m'appelle / tu t'appelles / il s'appelle + 名字", "examples": [{"text": "Je m'appelle Hélène.", "translation": "我叫伊莲。"}, {"text": "Tu t'appelles comment ?", "translation": "你叫什么名字？"}], "pitfalls": ["漏掉反身代词（*je appelle）", "忘记元音前的省略（*je me appelle）", "与单独 appeler（呼叫/打电话）混淆"], "sentenceRefs": ["s01-02", "s04-02", "s09-02", "s12-02", "s14-05"], "priority": "high", "confidence": "high", "needsVerification": false}, {"id": "g002", "title": "条件式现在时：『je voudrais』表达委婉愿望", "explanation": "『Je voudrais trouver l'amour』中的 voudrais 是 vouloir（想要）的条件式现在时。条件式在这里不是『过去将来』，而是表示礼貌、委婉的愿望，比直陈式现在时 je veux（我要）语气更柔和。法语里用条件式表达请求、愿望是常见的礼貌策略。", "pattern": "je voudrais + 不定式/名词（我想要……）", "examples": [{"text": "Je voudrais trouver l'amour.", "translation": "我想要找到爱情。"}, {"text": "Je voudrais un café.", "translation": "我想要一杯咖啡。"}], "pitfalls": ["在礼貌场景中误用 je veux（生硬）", "把 voudrais 当成直陈式现在时"], "sentenceRefs": ["s03-01", "s06-01", "s09-04"], "priority": "high", "confidence": "high", "needsVerification": false}, {"id": "g003", "title": "简单将来时：trouverai 与 trouveront", "explanation": "『Quand je trouverai l'amour』（当我找到爱情时）与『Trouveront l'oubli』（终将被遗忘）中的动词是简单将来时（futur simple）。第一组动词在不定式后加词尾：je trouverai（-ai）、ils trouveront（-ont）。注意：在 quand 引导的时间从句里，法语用将来时，而中文常不说『将』。", "pattern": "不定式 + -ai / -as / -a / -ons / -ez / -ont", "examples": [{"text": "Quand je trouverai l'amour, je serai heureuse.", "translation": "当我找到爱情时，我会幸福。"}, {"text": "Elles trouveront la réponse.", "translation": "她们会找到答案。"}], "pitfalls": ["在 quand 从句中不用将来时（法语里 quand + 将来时表示『当……时』）", "词尾写错（trouverai 不是 *trouverrais）"], "sentenceRefs": ["s13-03", "s14-01", "s14-02", "s14-03", "s14-04"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "g004", "title": "否定表达：personne ne …（没有人）", "explanation": "歌词中『Personne / Ne m'attend le soir』（没有人夜里等我）是把 personne（没有人）和动词前的 ne 搭配使用。法语中 personne 作『没有人』讲时，需要配合 ne 一起构成否定：Personne ne m'attend。『Personne ne fait battre mon cœur』= 没有人让我的心跳动。注意歌中把 Personne 单独成行，朗读时与下一行连成一句。", "pattern": "personne + ne + 动词（+ 其他）", "examples": [{"text": "Personne ne m'attend le soir.", "translation": "夜里没有人等我。"}, {"text": "Personne ne le sait.", "translation": "没有人知道这件事。"}], "pitfalls": ["只写 personne 而漏掉 ne（口语中常省略 ne，但书面标准需保留）", "把 personne 与『人』（une personne）混淆——作主语『没有人』时需 ne"], "sentenceRefs": ["s08-01", "s08-02", "s08-04", "s11-01", "s11-02", "s11-04"], "priority": "high", "confidence": "high", "needsVerification": false}, {"id": "g005", "title": "使动结构：faire + 不定式（fait battre）", "explanation": "『Personne ne fait battre mon cœur』意为『没有人让我的心跳动』。faire（让、使）+ 不定式 battre（跳动）构成使动结构，表示『使某物做某事』。这里是没有人『使』心跳动。这种结构在法语中很常用（faire faire quelque chose = 让某事被做/使……做）。", "pattern": "faire（变位）+ 不定式", "examples": [{"text": "Personne ne fait battre mon cœur.", "translation": "没有人让我的心跳动。"}, {"text": "Je fais réparer ma voiture.", "translation": "我让人修理我的车。"}], "pitfalls": ["逐字译成『make to beat』式的中文语序", "把 faire battre 误解为 battre 的进行时"], "sentenceRefs": ["s08-04", "s11-04"], "priority": "high", "confidence": "high", "needsVerification": false}, {"id": "g006", "title": "代词式动词 + 主语倒装：s'éteignent les projecteurs", "explanation": "『Lorsque s'éteignent les projecteurs』= 当聚光灯熄灭时。s'éteindre 是代词式动词（熄灭）。本句主语 les projecteurs 放在动词之后，这是一种书面/文学性的倒装，尤其在 lorsque（当……时）引导的从句中。正常的语序是 les projecteurs s'éteignent。", "pattern": "lorsque + s'éteindre（倒装）+ 主语", "examples": [{"text": "Lorsque s'éteignent les projecteurs, la salle devient noire.", "translation": "当聚光灯熄灭时，大厅陷入黑暗。"}], "pitfalls": ["误以为 s'éteignent 是及物『熄灭』而漏掉反身代词 se", "不理解倒装，误把 projecteurs 当宾语"], "sentenceRefs": ["s08-05", "s11-05"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "g007", "title": "主有代词：la vôtre", "explanation": "『Comme la vôtre』中的 la vôtre 是主有代词，代替『votre + 阴性名词』。此处指代前文的 la vie（生活），所以用阴性 la vôtre。主有代词要配合所指名词的性与数：le mien/la mienne、le vôtre/la vôtre 等。它必须独立使用，后面不再跟名词。", "pattern": "le mien / la mienne / le nôtre / la vôtre …（我的那个/你的那个/我们的/你们的）", "examples": [{"text": "Ma vie est comme la vôtre.", "translation": "我的生活和你们的一样。"}, {"text": "Ce n'est pas mon stylo, c'est le tien.", "translation": "这不是我的笔，是你的。"}], "pitfalls": ["把主有代词与主有形容词混淆（la vôtre 独立；votre 后必须跟名词）", "忽略与所指名词的性数一致（vie 是阴性，故用 la vôtre）"], "sentenceRefs": ["s02-04"], "priority": "medium", "confidence": "high", "needsVerification": false}, {"id": "g008", "title": "quand（当……时）与 quant à（至于）的辨析", "explanation": "歌词『Quand à la télé, vous me regardez』意为『当在电视上，你们注视着我』，此处 Quand 是连词『当……时』（= when），不是介词短语 quant à（至于）。法语中 quand（何时/当……时）与 quant à（至于、关于）发音相同但意义不同，是常见的拼写易混点。部分歌词转写把这里误写成『Quant à la télé』；按语义应理解为 quand。", "pattern": "quand + 从句（当……时）；quant à + 名词（至于……）", "examples": [{"text": "Quand il pleut, je reste à la maison.", "translation": "下雨的时候，我待在家里。"}, {"text": "Quant à moi, je suis d'accord.", "translation": "至于我，我同意。"}], "pitfalls": ["把 quand 写成 quant（或反之）", "把『Quant à la télé』误解为『至于电视』"], "sentenceRefs": ["s10-02"], "priority": "medium", "confidence": "medium", "needsVerification": true, "notes": ["歌词转写版本不一，部分写成『Quant à la télé』；按语义（『当在电视上』）采用 quand，并在此提示差异。"]}], "exercises": [{"id": "x001", "type": "meaning", "prompt": "「Je m'appelle Hélène」是什么意思？", "options": ["我叫伊莲", "伊莲打电话给我", "我找到了伊莲", "伊莲在叫我"], "answer": {"key": "我叫伊莲", "explanation": "s'appeler 是代词式动词『名叫……』；je m'appelle = 我叫。"}, "difficulty": "easy", "relatedVocabulary": ["v001"], "relatedGrammar": ["g001"]}, {"id": "x002", "type": "cloze", "prompt": "填空：Je m'___ Hélène.（我叫伊莲）", "answer": {"key": "appelle", "explanation": "s'appeler 第一人称单数现在时，反身代词 me 省略为 m'，动词变位为双写 l 的 appelle。"}, "difficulty": "easy", "relatedVocabulary": ["v001"]}, {"id": "x003", "type": "grammar-discrimination", "prompt": "「je voudrais」中的 voudrais 是什么形式？", "options": ["条件式现在时", "直陈式现在时", "简单将来时", "未完成过去时"], "answer": {"key": "条件式现在时", "explanation": "voudrais 是 vouloir 的条件式现在时，在此表示委婉的愿望（我想要）。"}, "difficulty": "easy", "relatedGrammar": ["g002"]}, {"id": "x004", "type": "translation", "prompt": "把「Personne ne fait battre mon cœur.」译成中文。", "answer": {"model": "没有人让我的心跳动。", "rubric": ["体现 personne ne… 的否定（没有人）", "体现使动结构 faire battre（让……跳动）"], "explanation": "faire battre 为使动结构；personne ne… 表『没有人』。"}, "difficulty": "medium", "relatedGrammar": ["g004", "g005"], "relatedSentences": ["s08-04"]}, {"id": "x005", "type": "cloze", "prompt": "填空：Quand je ___ l'amour.（当我找到爱情时）", "answer": {"key": "trouverai", "explanation": "quand 引导的时间从句用简单将来时，trouver 第一人称单数 = trouverai。"}, "difficulty": "medium", "relatedVocabulary": ["v007"], "relatedGrammar": ["g003"]}, {"id": "x006", "type": "grammar-discrimination", "prompt": "「___ à la télé（当在电视上）」中，正确的词是哪一个？", "options": ["quand", "quant", "qu'en", "qu'on"], "answer": {"key": "quand", "explanation": "此处意为『当在电视上』，用连词 quand（当……时）；quant à 才是『至于』。"}, "difficulty": "medium", "relatedGrammar": ["g008"], "relatedSentences": ["s10-02"]}, {"id": "x007", "type": "meaning", "prompt": "「Un jour ou l'autre」的意思是？", "options": ["总有一天（迟早）", "今天或明天", "日复一日", "某一天的另一天"], "answer": {"key": "总有一天（迟早）", "explanation": "惯用语，字面『这一天或另一天』，实际意为『总有一天、迟早』。"}, "difficulty": "easy", "relatedExpressions": ["e005"]}], "qa": {"checks": [{"id": "c01", "name": "source-fidelity", "status": "unverified", "notes": "空格由分词丢失的数据重建，标点按通行写法恢复，quand/quant 按语义采用 quand；未对权威歌词源逐字核验（见 source.normalizationNotes）。"}, {"id": "c02", "name": "sentence-integrity", "status": "pass"}, {"id": "c03", "name": "surface-integrity", "status": "pass"}, {"id": "c04", "name": "cross-reference-resolution", "status": "pass"}, {"id": "c05", "name": "id-uniqueness-and-format", "status": "pass"}, {"id": "c06", "name": "schema-conformance", "status": "pass"}, {"id": "c07", "name": "no-dangling-or-orphan-records", "status": "pass"}, {"id": "c08", "name": "no-invention", "status": "pass", "notes": "未虚构词频/等级/词源/地域；amour 的性、la vôtre 的性数、journal 复数等均有可靠依据。"}, {"id": "c09", "name": "context-over-dictionary", "status": "pass"}, {"id": "c10", "name": "layered-meanings", "status": "pass", "notes": "本歌无俚语/粗俗语；惯用语 e005（Un jour ou l'autre）已分层标注字面义与语境义。"}, {"id": "c11", "name": "uncertainty-flagged", "status": "pass", "notes": "g008（quand/quant）已标 needsVerification；c01 已标 unverified。"}], "summary": "pass-with-disclosures", "validator": "scripts/validate_document.py", "reviewedAt": "2026-11-01T00:50:00Z"}}</script>
+<script id="palette-data" type="application/json">["#E74C3C", "#E67E22", "#F1C40F", "#2ECC71", "#1ABC9C", "#3498DB", "#9B59B6", "#E91E63", "#16A085", "#D35400", "#2980B9", "#8E44AD", "#27AE60", "#C0392B", "#7F8C8D", "#34495E"]</script>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- utils ---------- */
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function hexToRgba(hex,a){hex=(hex||"").replace("#","");if(!/^[0-9a-fA-F]{6}$/.test(hex))return "transparent";
+  var r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+  return "rgba("+r+","+g+","+b+","+a+")"}
+function readJSON(id){try{return JSON.parse(document.getElementById(id).textContent)}catch(e){return null}}
+
+var DATA = readJSON("packet-data") || {};
+var PALETTE = readJSON("palette-data") || ["#E74C3C","#E67E22","#F1C40F","#2ECC71","#1ABC9C","#3498DB","#9B59B6","#E91E63","#16A085","#D35400","#2980B9","#8E44AD"];
+var meta = DATA.meta || {};
+var sentences = DATA.sentences || [];
+var vocabulary = DATA.vocabulary || [];
+var expressions = DATA.expressions || [];
+var grammar = DATA.grammar || [];
+var exercises = DATA.exercises || [];
+var qa = DATA.qa || {};
+
+/* ---------- color assignment ---------- */
+var colorMap = {};
+vocabulary.forEach(function(v,i){ colorMap[v.id] = PALETTE[i % PALETTE.length]; });
+
+/* ---------- vocab card body (shared by tooltip & vocab tab) ---------- */
+function vocabDetail(v){
+  var h="";
+  if(v.morphology && v.morphology.description){h+='<div class="detail-row"><div class="detail-label">Morphology</div><div>'+esc(v.morphology.description)+'</div></div>'}
+  if(v.collocations && v.collocations.length){h+='<div class="detail-row"><div class="detail-label">Collocations</div>'+v.collocations.map(function(c){return '<span class="tt-tag">'+esc(c)+'</span>'}).join("")+'</div>'}
+  if(v.examples && v.examples.length){h+='<div class="detail-row"><div class="detail-label">Examples</div>'+v.examples.map(function(e){return '<div class="ex-src">'+esc(e.text)+'</div><div class="ex-tr">'+esc(e.translation)+'</div>'}).join("")+'</div>'}
+  if(v.commonErrors && v.commonErrors.length){h+='<div class="detail-row"><div class="detail-label">Common errors</div><ul>'+v.commonErrors.map(function(c){return "<li>"+esc(c)+"</li>"}).join("")+'</ul></div>'}
+  if(v.confusions && v.confusions.length){h+='<div class="detail-row"><div class="detail-label">Watch out</div><ul>'+v.confusions.map(function(c){return "<li><b>"+esc(c.term)+"</b> — "+esc(c.distinction)+"</li>"}).join("")+'</ul></div>'}
+  if(v.region && v.region.length){h+='<div class="detail-row"><div class="detail-label">Region</div>'+v.region.map(function(r){return '<span class="tt-tag">'+esc(r)+'</span>'}).join("")+'</div>'}
+  return h;
+}
+
+/* ---------- header ---------- */
+function renderHeader(){
+  document.title = meta.title || "Study packet";
+  document.getElementById("title").textContent = meta.title || "Study packet";
+  var langNames={en:"English",fr:"French",es:"Spanish",de:"German",it:"Italian",pt:"Portuguese",nl:"Dutch",sv:"Swedish",no:"Norwegian",da:"Danish"};
+  var src = langNames[meta.textLanguage] || meta.textLanguage || "";
+  var parts=[];
+  if(src) parts.push(src);
+  if(meta.explanationLanguage) parts.push("→ "+meta.explanationLanguage);
+  if(meta.genre) parts.push(meta.genre);
+  if(meta.register) parts.push(meta.register);
+  document.getElementById("meta-line").textContent = parts.join(" · ");
+}
+
+/* ---------- reading ---------- */
+function renderReading(){
+  var el=document.getElementById("panel-reading"); var h="";
+  if(!sentences.length){el.innerHTML='<div class="empty">No sentences.</div>';return}
+  var byPara={};
+  sentences.forEach(function(s){ (byPara[s.paragraph]=byPara[s.paragraph]||[]).push(s); });
+  Object.keys(byPara).sort(function(a,b){return a-b}).forEach(function(p){
+    h+='<div class="para"><div class="para-head">Paragraph '+p+'</div>';
+    byPara[p].forEach(function(s){
+      h+='<div class="sent-row" id="sent-'+esc(s.id)+'"><div><span class="sent-id">'+esc(s.id)+'</span><span class="sent-orig">'+esc(s.text)+'</span></div>'
+       +'<div><div class="sent-trans">'+esc(s.translation)+'</div>'
+       +(s.literal?'<div class="sent-literal">'+esc(s.literal)+'</div>':'')
+       +'</div></div>';
+    });
+    h+='</div>';
+  });
+  h+=renderQA();
+  el.innerHTML=h;
+}
+
+/* ---------- annotated (word highlighting) ---------- */
+function isWordChar(ch){ return !!ch && /[\p{L}\p{M}']/u.test(ch); }
+function highlightText(text, items){
+  // items: array of {id, surface}; sort longest-first to prefer whole expressions
+  items.sort(function(a,b){return b.surface.length-a.surface.length});
+  var marks=[];
+  items.forEach(function(it){
+    var s=it.surface, idx=text.indexOf(s);
+    while(idx!==-1){
+      if(!isWordChar(text[idx-1]) && !isWordChar(text[idx+s.length])) marks.push({start:idx,end:idx+s.length,id:it.id});
+      idx=text.indexOf(s, idx+s.length);
+    }
+  });
+  marks.sort(function(a,b){return a.start-b.start || (b.end-b.start)-(a.end-a.start)});
+  var accepted=[], lastEnd=-1;
+  marks.forEach(function(m){ if(m.start>=lastEnd){accepted.push(m);lastEnd=m.end;} });
+  var html="", pos=0;
+  accepted.forEach(function(m){
+    html+=esc(text.slice(pos,m.start));
+    var c=colorMap[m.id]||"#888888";
+    html+='<span class="token" data-vocab="'+esc(m.id)+'" style="--tok:'+c+';--tok-bg:'+hexToRgba(c,0.16)+'">'+esc(text.slice(m.start,m.end))+'</span>';
+    pos=m.end;
+  });
+  html+=esc(text.slice(pos));
+  return html;
+}
+function renderAnnotated(){
+  var el=document.getElementById("panel-annotated"); var h="";
+  if(!sentences.length){el.innerHTML='<div class="empty">No sentences.</div>';return}
+  var vocabById={}; vocabulary.forEach(function(v){vocabById[v.id]=v});
+  var byPara={};
+  sentences.forEach(function(s){ (byPara[s.paragraph]=byPara[s.paragraph]||[]).push(s); });
+  Object.keys(byPara).sort(function(a,b){return a-b}).forEach(function(p){
+    h+='<div class="para"><div class="para-head">Paragraph '+p+'</div>';
+    byPara[p].forEach(function(s){
+      var items=(s.vocabularyRefs||[]).map(function(id){var v=vocabById[id];return v?{id:id,surface:v.surface}:null}).filter(Boolean);
+      h+='<div class="annot-block"><div class="annot-sent">'+highlightText(s.text,items)+'</div>'
+        +'<div class="annot-trans">'+esc(s.translation)+'</div>'
+        +(s.literal?'<div class="annot-literal">'+esc(s.literal)+'</div>':'')
+        +'</div>';
+    });
+    h+='</div>';
+  });
+  h+='<div class="annot-hint" style="color:var(--text-3);font-size:12.5px;margin-top:4px">Tap or hover a highlighted word for its full entry.</div>';
+  h+=renderQA();
+  el.innerHTML=h;
+}
+
+/* ---------- vocabulary ---------- */
+function renderVocabulary(){
+  var el=document.getElementById("panel-vocabulary");
+  if(!vocabulary.length){el.innerHTML='<div class="empty">No vocabulary annotated for this text.</div>';return}
+  var h='<div class="controls"><input type="search" id="vocab-search" placeholder="Search…">'
+       +'<select id="vocab-sort"><option value="order">Reading order</option><option value="alpha">Alphabetical</option><option value="priority">Priority</option></select>'
+       +'<select id="vocab-filter"><option value="all">All priorities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>'
+       +'<div class="grid" id="vocab-grid"></div>'+renderQA();
+  el.innerHTML=h;
+  var grid=document.getElementById("vocab-grid");
+  function render(){
+    var q=(document.getElementById("vocab-search").value||"").toLowerCase();
+    var sort=document.getElementById("vocab-sort").value;
+    var filt=document.getElementById("vocab-filter").value;
+    var list=vocabulary.filter(function(v){
+      if(filt!=="all" && v.priority!==filt) return false;
+      if(q && !(v.surface+" "+v.lemma+" "+v.meaningInContext).toLowerCase().includes(q)) return false;
+      return true;
+    });
+    if(sort==="alpha") list.sort(function(a,b){return (a.lemma||a.surface).localeCompare(b.lemma||b.surface)});
+    else if(sort==="priority"){var order={high:0,medium:1,low:2}; list.sort(function(a,b){return (order[a.priority]??9)-(order[b.priority]??9)})}
+    grid.innerHTML=list.map(function(v){
+      var c=colorMap[v.id]||"#888888";
+      var ipa=v.pronunciation&&v.pronunciation.ipa?'<span class="vcard-ipa">/'+esc(v.pronunciation.ipa)+'/</span>':'';
+      return '<div class="vcard" data-id="'+esc(v.id)+'"><div class="vcard-head">'
+        +'<span class="vcard-surface" style="color:'+c+'">'+esc(v.surface)+'</span>'
+        +'<span class="vcard-lemma">'+esc(v.lemma)+'</span>'
+        +'<span class="vcard-pos">'+esc(v.pos)+'</span>'
+        +'</div>'+ipa
+        +'<div class="vcard-meaning">'+esc(v.meaningInContext)+'</div>'
+        +'<div class="vcard-prio prio-'+esc(v.priority||"")+'" style="margin-top:8px">'+esc(v.priority||"")+(v.needsVerification?' · ⚠ verify':'')+'</div>'
+        +'<div class="vcard-detail">'+vocabDetail(v)+'</div></div>';
+    }).join("");
+  }
+  document.getElementById("vocab-search").addEventListener("input",render);
+  document.getElementById("vocab-sort").addEventListener("change",render);
+  document.getElementById("vocab-filter").addEventListener("change",render);
+  grid.addEventListener("click",function(e){
+    var card=e.target.closest(".vcard"); if(!card) return;
+    card.classList.toggle("open");
+  });
+  render();
+}
+
+/* ---------- expressions ---------- */
+function renderExpressions(){
+  var el=document.getElementById("panel-expressions"); var h="";
+  if(!expressions.length){el.innerHTML='<div class="empty">No fixed expressions or idioms worth singling out in this text.</div>';return}
+  h=expressions.map(function(e){
+    var badges='<span class="badge badge-type">'+esc(e.type)+'</span>'
+      +'<span class="badge badge-reg">'+esc(e.register||"neutral")+'</span>'
+      +(e.sensitivity && e.sensitivity!=="none"?'<span class="badge badge-sens-warn">'+esc(e.sensitivity)+'</span>':'');
+    var region=e.region&&e.region.length?'<div class="detail-row"><div class="detail-label">Region</div>'+e.region.map(function(r){return '<span class="tt-tag">'+esc(r)+'</span>'}).join("")+(e.regionCertainty&&e.regionCertainty!=="verified"?' <span style="color:var(--text-3)">('+esc(e.regionCertainty)+')</span>':'')+'</div>':'';
+    var literal=e.literalMeaning?'<div class="detail-row"><div class="detail-label">Literal meaning</div><div class="ex-src">'+esc(e.literalMeaning)+'</div></div>':'';
+    var ex=e.examples&&e.examples.length?'<div class="detail-row"><div class="detail-label">Examples</div>'+e.examples.map(function(x){return '<div class="ex-src">'+esc(x.text)+'</div><div class="ex-tr">'+esc(x.translation)+'</div>'}).join("")+'</div>':'';
+    var alt=e.alternatives&&e.alternatives.length?'<div class="detail-row"><div class="detail-label">Alternatives</div>'+e.alternatives.map(function(a){return '<span class="tt-tag">'+esc(a)+'</span>'}).join("")+'</div>':'';
+    var notes=e.usageNotes&&e.usageNotes.length?'<div class="detail-row"><div class="detail-label">Usage</div><ul>'+e.usageNotes.map(function(n){return "<li>"+esc(n)+"</li>"}).join("")+'</ul></div>':'';
+    return '<div class="excard"><div class="excard-head"><span class="excard-text">'+esc(e.text)+'</span>'+badges+'</div>'
+      +'<div class="vcard-meaning">'+esc(e.meaningInContext)+'</div>'
+      +'<div class="vcard-detail" style="display:block">'+literal+region+ex+alt+notes
+      +(e.needsVerification?'<div class="tt-verify">⚠ needs verification</div>':'')+'</div></div>';
+  }).join("");
+  el.innerHTML=h+renderQA();
+}
+
+/* ---------- grammar ---------- */
+function renderGrammar(){
+  var el=document.getElementById("panel-grammar"); var h="";
+  if(!grammar.length){el.innerHTML='<div class="empty">No grammar points explained for this text.</div>';return}
+  h=grammar.map(function(g){
+    var pat=g.pattern?'<div class="gcard-pattern">'+esc(g.pattern)+'</div>':'';
+    var ex=g.examples&&g.examples.length?'<div class="gcard-ex">'+g.examples.map(function(x){return '<div class="ex-src">'+esc(x.text)+'</div><div class="ex-tr">'+esc(x.translation)+'</div>'}).join("")+'</div>':'';
+    var pit=g.pitfalls&&g.pitfalls.length?'<div class="detail-row"><div class="detail-label">Common errors</div><ul>'+g.pitfalls.map(function(p){return "<li>"+esc(p)+"</li>"}).join("")+'</ul></div>':'';
+    var refs=(g.sentenceRefs||[]).map(function(r){return '<a data-goto="'+esc(r)+'">'+esc(r)+'</a>'}).join(", ");
+    return '<div class="gcard"><div class="gcard-title"><span class="gid">'+esc(g.id)+'</span>'+esc(g.title)+'</div>'
+      +'<div class="gcard-explain">'+esc(g.explanation)+'</div>'+pat+ex+pit
+      +'<div class="gcard-refs">In: '+refs+'</div></div>';
+  }).join("");
+  el.innerHTML=h+renderQA();
+}
+
+/* ---------- exercises ---------- */
+function renderExercises(){
+  var el=document.getElementById("panel-exercises"); var h="";
+  if(!exercises.length){el.innerHTML='<div class="empty">No exercises for this text.</div>';return}
+  h=exercises.map(function(x,i){
+    var typeBadge='<span class="badge badge-type">'+esc(x.type)+'</span><span class="badge">'+esc(x.difficulty)+'</span>';
+    var prompt=x.prompt.replace(/\{\{\s*blank\s*\}\}/g,'<span class="blank"></span>');
+    var opts="";
+    if(x.options && x.options.length){
+      opts='<div class="opts">'+x.options.map(function(o,oi){
+        return '<button class="opt" data-key="'+esc(o)+'" data-idx="'+i+'">'+String.fromCharCode(65+oi)+'. '+esc(o)+'</button>';
+      }).join("")+'</div>';
+    }
+    var ans=x.answer||{};
+    var ansHtml='';
+    if(ans.key!=null) ansHtml+='<span class="lbl">Answer: </span>'+esc(ans.key);
+    if(ans.model!=null) ansHtml+='<span class="lbl">Model answer: </span>'+esc(ans.model);
+    if(ans.rubric && ans.rubric.length) ansHtml+='<div class="lbl">Rubric</div><ul class="rubric">'+ans.rubric.map(function(r){return "<li>"+esc(r)+"</li>"}).join("")+'</ul>';
+    if(ans.explanation) ansHtml+='<div style="margin-top:6px">'+esc(ans.explanation)+'</div>';
+    var reveal='<button class="reveal-btn" data-idx="'+i+'">Show answer</button><div class="answer-box" data-idx="'+i+'">'+ansHtml+'</div>';
+    return '<div class="exercise"><div class="exercise-head"><span class="gid">'+esc(x.id)+'</span>'+typeBadge+'</div>'
+      +'<div class="exercise-prompt">'+esc(prompt)+'</div>'+opts+reveal+'</div>';
+  }).join("");
+  el.innerHTML=h+renderQA();
+}
+
+/* ---------- cards (flashcards) ---------- */
+function buildCards(){
+  var cards=[];
+  vocabulary.forEach(function(v){
+    cards.push({kind:"vocab",front:v.surface,ipa:(v.pronunciation&&v.pronunciation.ipa)||"",
+      backTop:v.lemma+" ("+v.pos+")",backMain:v.meaningInContext,
+      backMeta:(v.morphology&&v.morphology.description)||""});
+  });
+  expressions.forEach(function(e){
+    cards.push({kind:"expr",front:e.text,ipa:"",
+      backTop:e.type+(e.register?" · "+e.register:""),backMain:e.meaningInContext,
+      backMeta:e.literalMeaning?("Literal: "+e.literalMeaning):""});
+  });
+  return cards;
+}
+function renderCards(){
+  var el=document.getElementById("panel-cards");
+  var cards=buildCards();
+  if(!cards.length){el.innerHTML='<div class="empty">No cards — annotate some vocabulary or expressions first.</div>';return}
+  var h='<div class="flash-wrap"><div class="flash-stage"><div class="flash" id="flash">'
+    +'<div class="flash-face flash-front"><div class="flash-front-word" id="f-front"></div><div class="flash-front-ipa" id="f-ipa"></div><div class="flash-hint">Tap to flip</div></div>'
+    +'<div class="flash-face flash-back"><div class="flash-back-lemma" id="f-top"></div><div class="flash-back-meaning" id="f-main"></div><div class="flash-back-meta" id="f-meta"></div></div>'
+    +'</div></div>'
+    +'<div class="flash-nav"><button id="f-prev">←</button><span class="flash-count" id="f-count"></span><button id="f-next">→</button><button id="f-shuffle">Shuffle</button></div>'
+    +'<div class="flash-export"><button id="f-export">Copy Anki TSV</button><textarea id="f-tsv" hidden></textarea></div></div>'
+    +renderQA();
+  el.innerHTML=h;
+  var idx=0, flash=document.getElementById("flash");
+  function show(i){
+    idx=(i+cards.length)%cards.length;
+    document.getElementById("f-front").textContent=cards[idx].front;
+    document.getElementById("f-ipa").textContent=cards[idx].ipa?"/"+cards[idx].ipa+"/":"";
+    document.getElementById("f-top").textContent=cards[idx].backTop;
+    document.getElementById("f-main").textContent=cards[idx].backMain;
+    document.getElementById("f-meta").textContent=cards[idx].backMeta;
+    document.getElementById("f-count").textContent=(idx+1)+" / "+cards.length;
+    flash.classList.remove("flipped");
+  }
+  flash.addEventListener("click",function(){flash.classList.toggle("flipped")});
+  document.getElementById("f-prev").addEventListener("click",function(e){e.stopPropagation();show(idx-1)});
+  document.getElementById("f-next").addEventListener("click",function(e){e.stopPropagation();show(idx+1)});
+  document.getElementById("f-shuffle").addEventListener("click",function(e){e.stopPropagation();for(var i=cards.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=cards[i];cards[i]=cards[j];cards[j]=t}show(0)});
+  document.getElementById("f-export").addEventListener("click",function(){
+    var tsv="#separator:tab\n#html:false\n#columns:Front\tBack\tTags\n";
+    vocabulary.forEach(function(v){
+      tsv+=v.surface+"\t"+v.lemma+" — "+v.meaningInContext+"\tlang-"+(meta.textLanguage||"")+" vocab "+v.priority+"\n";
+    });
+    expressions.forEach(function(e){
+      tsv+=e.text+"\t"+e.meaningInContext+" ("+e.register+")"+"\tlang-"+(meta.textLanguage||"")+" expr "+e.priority+"\n";
+    });
+    var ta=document.getElementById("f-tsv"); ta.hidden=false; ta.value=tsv;
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(tsv).then(function(){alert("Copied to clipboard")}).catch(function(){ta.select()})}
+    else{ta.select();}
+  });
+  show(0);
+}
+
+/* ---------- QA ---------- */
+function renderQA(){
+  var checks=(qa&&qa.checks)||[]; if(!checks.length) return "";
+  var cls={pass:"st-pass",fail:"st-fail",unverified:"st-unverified","not-applicable":"st-na"};
+  return '<details class="qa"><summary>Quality check — '+esc((qa.summary||"").toUpperCase())+'</summary><table><thead><tr><th>Check</th><th>Status</th><th>Notes</th></tr></thead><tbody>'
+    +checks.map(function(c){return '<tr><td>'+esc(c.name||c.id)+'</td><td class="'+(cls[c.status]||"")+'">'+esc(c.status||"")+'</td><td>'+esc(c.notes||"")+'</td></tr>'}).join("")
+    +'</tbody></table></details>';
+}
+
+/* ---------- tabs ---------- */
+function setupTabs(){
+  var tabs=document.getElementById("tabs");
+  tabs.addEventListener("click",function(e){
+    var b=e.target.closest(".tab"); if(!b) return;
+    document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active",t===b)});
+    document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("active")});
+    var panel=document.getElementById("panel-"+b.dataset.tab);
+    if(panel) panel.classList.add("active");
+  });
+}
+
+/* ---------- tooltip ---------- */
+function setupTooltip(){
+  var tip=document.getElementById("tooltip"); var vocabById={}; vocabulary.forEach(function(v){vocabById[v.id]=v});
+  var pinned=null;
+  function showFor(token, pin){
+    var v=vocabById[token.dataset.vocab]; if(!v) return;
+    var c=colorMap[v.id]||"#888888";
+    var ipa=(v.pronunciation&&v.pronunciation.ipa)?"<div class='tt-ipa'>/"+esc(v.pronunciation.ipa)+"/</div>":"";
+    tip.innerHTML='<div class="tt-head"><span class="tt-surface" style="color:'+c+'">'+esc(v.surface)+'</span><span class="tt-lemma">'+esc(v.lemma)+'</span><span class="tt-pos">'+esc(v.pos)+'</span></div>'
+      +ipa+'<div class="tt-meaning">'+esc(v.meaningInContext)+'</div>'+vocabDetail(v)
+      +(v.needsVerification?'<div class="tt-verify">⚠ needs verification</div>':'');
+    tip.hidden=false;
+    var r=token.getBoundingClientRect();
+    var tw=tip.offsetWidth, th=tip.offsetHeight;
+    var left=Math.min(Math.max(8, r.left + r.width/2 - tw/2), window.innerWidth-tw-8);
+    var top=r.bottom+8;
+    if(top+th>window.innerHeight-8){ top=Math.max(8, r.top-th-8); }
+    tip.style.left=left+"px"; tip.style.top=top+"px";
+    pinned=pin?token:null;
+  }
+  document.addEventListener("mouseover",function(e){
+    var t=e.target.closest(".token"); if(!t) return; showFor(t,false);
+  });
+  document.addEventListener("mouseout",function(e){
+    var t=e.target.closest(".token"); if(!t||pinned) return; tip.hidden=true;
+  });
+  document.addEventListener("click",function(e){
+    var t=e.target.closest(".token");
+    if(!t){ if(!e.target.closest("#tooltip")) tip.hidden=true; pinned=null; return; }
+    if(pinned===t){pinned=null;tip.hidden=true;} else {showFor(t,true);}
+  });
+  document.addEventListener("scroll",function(){ if(!pinned) tip.hidden=true; },true);
+  window.addEventListener("resize",function(){ if(!pinned) tip.hidden=true; });
+}
+
+/* ---------- grammar sentence links ---------- */
+function setupGoto(){
+  document.addEventListener("click",function(e){
+    var a=e.target.closest("a[data-goto]"); if(!a) return;
+    var id=a.dataset.goto;
+    var rtab=document.querySelector('.tab[data-tab="reading"]');
+    var rpanel=document.getElementById("panel-reading");
+    document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active",t===rtab)});
+    document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("active")});
+    rpanel.classList.add("active");
+    var target=document.getElementById("sent-"+id);
+    if(target) target.scrollIntoView({behavior:"smooth",block:"center"});
+  });
+}
+
+/* ---------- exercise interactions ---------- */
+function setupExercises(){
+  document.addEventListener("click",function(e){
+    var opt=e.target.closest(".opt");
+    if(opt){
+      var key=opt.dataset.key, idx=opt.dataset.idx, ex=exercises[idx];
+      if(!ex) return;
+      var correct=ex.answer&&ex.answer.key;
+      var box=document.querySelector('.answer-box[data-idx="'+idx+'"]');
+      var opts=opt.parentElement.querySelectorAll(".opt");
+      if(ex.answer&&ex.answer.key!=null){
+        opts.forEach(function(o){
+          if(o.dataset.key===correct){o.classList.add("reveal","correct")}
+          if(o===opt&&o.dataset.key!==correct){o.classList.add("wrong")}
+        });
+      }
+      if(box) box.classList.add("show");
+      return;
+    }
+    var rb=e.target.closest(".reveal-btn");
+    if(rb){var box=document.querySelector('.answer-box[data-idx="'+rb.dataset.idx+'"]'); if(box) box.classList.toggle("show");}
+  });
+}
+
+/* ---------- theme ---------- */
+function setupTheme(){
+  var btn=document.getElementById("theme-toggle");
+  function current(){
+    if(document.documentElement.dataset.theme==="dark") return "dark";
+    if(document.documentElement.dataset.theme==="light") return "light";
+    return "system";
+  }
+  function apply(){
+    var c=current();
+    btn.textContent = c==="dark" ? "☾" : c==="light" ? "☀" : "◐";
+  }
+  try{
+    var saved=localStorage.getItem("els-theme");
+    if(saved==="dark"||saved==="light") document.documentElement.dataset.theme=saved;
+  }catch(e){}
+  apply();
+  btn.addEventListener("click",function(){
+    var c=current();
+    var next = c==="system" ? "light" : c==="light" ? "dark" : "system";
+    if(next==="system") delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme=next;
+    try{ if(next==="system") localStorage.removeItem("els-theme"); else localStorage.setItem("els-theme",next);}catch(e){}
+    apply();
+  });
+}
+
+/* ---------- init ---------- */
+renderHeader();
+setupTheme();
+setupTabs();
+renderReading();
+renderAnnotated();
+renderVocabulary();
+renderExpressions();
+renderGrammar();
+renderExercises();
+renderCards();
+setupTooltip();
+setupGoto();
+setupExercises();
+})();
+</script>
+</body>
+</html>
